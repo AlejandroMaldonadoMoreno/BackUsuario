@@ -76,9 +76,29 @@ const getProductosPorCategoria = async (req, res) => {
   }
 };
 
+const crearProducto = async (req, res) => {
+    const { nombre, precio, stock, imagen_url, descripcion, id_categoria } = req.body;
+
+    try {
+        if (!nombre || !precio || !id_categoria) {
+            return res.status(400).json({msg: 'Los campos nombre, precio e id_categoria son obligatorios'});
+        }
+
+        const result = await pool.query( `INSERT INTO productos (nombre, precio, stock, imagen_url, descripcion, id_categoria)
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [nombre, precio, stock || 0, imagen_url || null, descripcion || null, id_categoria]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error("ERROR crearProducto:", error);
+        res.status(500).json({ error: 'Error al crear producto', detalle: error.message });
+    }
+}
+
 module.exports = {
   getProductos,
   buscarProductos,
   getProductoById,
-  getProductosPorCategoria
+  getProductosPorCategoria, crearProducto
 };

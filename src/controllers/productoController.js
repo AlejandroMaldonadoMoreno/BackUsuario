@@ -3,8 +3,11 @@ const pool = require('../config/db');
 const getProductos = async (req, res) => {
   try {
     const query = `
-      SELECT  p.id_producto, p.nombre, p.precio, p.stock, p.imagen_url, p.descripcion, c.nombre AS categoria
-      FROM productos p JOIN categoria c ON p.id_categoria = c.id_categoria ORDER BY p.id_producto ASC `;
+      SELECT p.id_producto, p.nombre, p.precio, p.stock, p.imagen_url, p.descripcion, p.youtube_id, c.nombre AS categoria
+      FROM productos p 
+      LEFT JOIN categoria c ON p.id_categoria = c.id_categoria 
+      ORDER BY p.id_producto ASC 
+    `;
     const response = await pool.query(query);
     res.json(response.rows);
   } catch (error) {

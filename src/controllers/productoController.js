@@ -77,16 +77,16 @@ const getProductosPorCategoria = async (req, res) => {
 };
 
 const crearProducto = async (req, res) => {
-    const { nombre, precio, stock, imagen_url, descripcion, id_categoria } = req.body;
+    const { nombre, precio, stock, imagen_url, descripcion, id_categoria, youtube_id} = req.body;
 
     try {
         if (!nombre || !precio || !id_categoria) {
             return res.status(400).json({msg: 'Los campos nombre, precio e id_categoria son obligatorios'});
         }
 
-        const result = await pool.query( `INSERT INTO productos (nombre, precio, stock, imagen_url, descripcion, id_categoria)
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [nombre, precio, stock || 0, imagen_url || null, descripcion || null, id_categoria]
+        const result = await pool.query( `INSERT INTO productos (nombre, precio, stock, imagen_url, descripcion, id_categoria, youtube_id)
+             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+            [nombre, precio, stock || 0, imagen_url || null, descripcion || null, id_categoria, youtube_id || null]
         );
 
         res.status(201).json(result.rows[0]);
